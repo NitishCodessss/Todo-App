@@ -1,30 +1,41 @@
 import { useState } from 'react'
+import { TodoProvider } from "./context"
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [todos, setTodos] = useState([])
+
+  const addTodo = (todo) => {
+    setTodos((prev) => [...prev, {id: Date.now(), ...todo}])
+  }
+
+  const updateTodo = (id, todo) => {
+    setTodos((prev) => prev.map((prevTodo) =>( prevTodo.id === id ? todo : prevTodo  )))
+  }
+  
+  const removeTodo = (id) =>{
+    setTodos((prev) => prev.filter((todo) => todo.id !== id))
+  }
+
+  const toggleComplete = (id) => {
+    setTodos((prev) => prev.map((prevTodo) => prevTodo === id ? {...prevTodo, checked: !prevTodo.checked} : prevTodo))
+  }
+
 
   return (
-    <>
-    <div className='flex justify-center '>
-      <h1 className='text-center text-3xl font-bold p-4 w-3xl bg-teal-900 text-teal-100 rounded-2xl mt-7'>Create Your Todo and grow fast</h1>
+    <TodoProvider value={{todos, addTodo, updateTodo, removeTodo, toggleComplete}}>
+     <div className="bg-[#172842] min-h-screen py-8">
+                <div className="w-full max-w-2xl mx-auto shadow-md rounded-lg px-4 py-3 text-white">
+                    <h1 className="text-2xl font-bold text-center mb-8 mt-2">Manage Your Todos</h1>
+                    <div className="mb-4">
+                        {/* Todo form goes here */} 
+                    </div>
+                    <div className="flex flex-wrap gap-y-3">
+                        {/*Loop and Add TodoItem here */}
+                    </div>
+                </div>
      </div>
-     <div className='flex justify-center h-100 mt-8'>
-       <form >
-        <input type="text"
-        placeholder='Enter Todos here . . .'
-        className="text-xl border-2 border-teal-900 text-amber-50 rounded-2xl p-3 mr-5"
-         />
-
-        <input type="text"
-         placeholder='Write description here'
-        className="text-xl border-2 border-teal-900 text-amber-50 rounded-2xl p-3"
-         />
-         <button className='text-xl border-2 border-teal-900 text-teal-100 rounded-2xl p-3 px-5 ml-25 '>Add</button>
-      </form>
-     </div>
-   
-    </>
+    </TodoProvider>
   )
 }
 
